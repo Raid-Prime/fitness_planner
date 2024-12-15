@@ -18,6 +18,14 @@
             color: #333;
             min-height: 100vh;
             overflow-x: hidden;
+            background-attachment: fixed;
+        }
+
+        /* Ensure the background image scales properly on different devices */
+        @media (max-width: 768px) {
+            body {
+                background-size: contain;
+            }
         }
 
         /* Navbar styling */
@@ -226,4 +234,3 @@
     </script>
 </body>
 </html>
-

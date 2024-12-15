@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydration Tracker</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            margin-right: 10px;
+        }
+
+        .progress-bar {
+            transition: width 0.5s;
+        }
+
+        #custom-amount {
+            display: none; /* Hide custom amount field initially */
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: fade-in-out 3s ease-in-out;
+        }
+
+        @keyframes fade-in-out {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .celebration {
+            text-align: center;
+            color: #28a745;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Hydration Tracker</h1>
+
+        <!-- Form to calculate daily water goal -->
+        <form id="goal-form" class="mb-4">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="weight">Weight (kg):</label>
+                <input type="number" id="weight" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="activity">Activity Level:</label>
+                <select id="activity" class="form-control" required>
+                    <option value="Sedentary">Sedentary</option>
+                    <option value="Lightly Active">Lightly Active</option>
+                    <option value="Moderately Active">Moderately Active</option>
+                    <option value="Very Active">Very Active</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Set Goal</button>
+        </form>
+
+        <!-- Progress Section -->
+        <div id="progress-section" style="display: none;">
+            <h3>Your Progress</h3>
+            <div class="progress mb-3">
+                <div 
+                    class="progress-bar" 
+                    id="progress-bar" 
+                    role="progressbar" 
+                    aria-valuenow="0" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100" 
+                    style="width: 0%;">
+                    0%
+                </div>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-success" id="log-glass">Log Glass of Water (250ml)</button>
+                <button class="btn btn-warning" id="toggle-custom">Log Custom Amount</button>
+            </div>
+            <input type="number" id="custom-amount" class="form-control mb-3" placeholder="Enter custom amount (ml)">
+            <div id="celebration"></div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="mt-4">
+            <button class="btn btn-secondary" onclick="location.href='diet.html'">Go to Diet Planner</button>
+            <button class="btn btn-secondary" onclick="location.href='workout.html'">Go to Workout Planner</button>
+        </div>
+    </div>
+
+    <script>
+        const apiUrl = 'https://probable-space-train-7vvqwqgqpjgjcrww9-5000.app.github.dev/api/hydration';
+        let userId, dailyGoal;
+
+        // Handle goal form submission
+        document.getElementById('goal-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const weight = parseInt(document.getElementById('weight').value);
+            const activity = document.getElementById('activity').value;
+
+            const response = await fetch(`${apiUrl}/calculate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, weight, activityLevel: activity })
+            });
+            const data = await response.json();
+            userId = data.userId;
+            dailyGoal = data.dailyGoal;
+
+            document.getElementById('progress-section').style.display = 'block';
+            updateProgress();
+        });
+
+        // Update progress
+        async function updateProgress() {
+            const response = await fetch(`${apiUrl}/progress/${userId}`);
+            const data = await response.json();
+            const totalIntake = data.totalIntake || 0;
+
+            const percentage = Math.min((totalIntake / dailyGoal) * 100, 100);
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            document.getElementById('progress-bar').textContent = `${Math.round(percentage)}%`;
+
+            if (percentage === 100) {
+                document.getElementById('celebration').innerHTML = "🎉 Goal Achieved! Great job! 🎉";
+            }
+        }
+
+        // Log a glass of water
+        document.getElementById('log-glass').addEventListener('click', async () => {
+            await logWater(250);
+        });
+
+        // Toggle custom amount
+        document.getElementById('toggle-custom').addEventListener('click', () => {
+            const customInput = document.getElementById('custom-amount');
+            customInput.style.display = customInput.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Log custom amount
+        document.getElementById('custom-amount').addEventListener('change', async () => {
+            const amount = parseInt(document.getElementById('custom-amount').value);
+            if (amount) {
+                await logWater(amount);
+            }
+        });
+
+        async function logWater(amount) {
+            const response = await fetch(`${apiUrl}/log`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, intake: amount })
+            });
+            const data = await response.json();
+            showNotification(`Logged ${amount}ml successfully!`);
+            updateProgress();
+        }
+
+        // Notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.className = 'notification';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
+
+
+
+

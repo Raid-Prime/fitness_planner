@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diet Plan</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <style>
+    /* General Page Styling */
+    body {
+      /* Example: add a subtle background image + gradient overlay */
+      background: linear-gradient(rgba(255,255,255,0.6), rgba(242,249,246,0.6)), url("bg-pattern.jpg") repeat center/cover;
+      /* If you don't have an image, just keep the gradient: */
+      /* background: linear-gradient(180deg, #ffffff, #f2f9f6); */
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      position: relative;
+      /* Overflow hidden if you want the floating quotes fully contained */
+      overflow-x: hidden;
+    }
+
+    /* Navbar styling similar to homepage */
+    .navbar {
+      background: #f8f9fa; /* or pick a color or transparent if you prefer */
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .navbar-brand {
+      font-weight: bold;
+    }
+    .nav-link:hover {
+      color: #007bff !important;
+    }
+
+    /* "Floating quotes" - optional decorative effect */
+    .floating-quote {
+      position: absolute;
+      color: rgba(100,100,100,0.2);
+      font-size: 3rem;
+      animation: floatQuote 10s infinite ease-in-out;
+      pointer-events: none; /* don't block clicks */
+    }
+    @keyframes floatQuote {
+      0%   { transform: translateY(0);   opacity: 0.5; }
+      50%  { transform: translateY(-50px); opacity: 1; }
+      100% { transform: translateY(0);   opacity: 0.5; }
+    }
+    /* You can duplicate .floating-quote elements with different left/top positions for multiple quotes. */
+
+    /* Container / Form Styling */
+    main {
+      padding-bottom: 120px; /* ensure room above footer */
+    }
+    h2 {
+      margin-top: 40px;
+      font-weight: bold;
+    }
+    form label {
+      font-weight: 500;
+    }
+    #diet-results {
+      background-color: #e9f7ef;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Footer: black bar to match homepage style */
+    footer.footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: #333;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- OPTIONAL: Some floating quotes in background -->
+  <div class="floating-quote" style="top: 30%; left: 10%;">“Fitness”</div>
+  <div class="floating-quote" style="top: 60%; left: 70%;">“Health”</div>
+
+  <header>
+    <!-- Navbar (light) with brand + nav links -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="navbar-brand" href="#">Fitness Tracker</a>
+      <button class="navbar-toggler" type="button" aria-label="Toggle navigation" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <!-- Right-aligned nav items -->
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="diet.html">Diet</a></li>
+          <li class="nav-item"><a class="nav-link" href="workout.html">Workout</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container mt-4">
+      <section id="diet">
+        <h2>Diet Plan</h2>
+        <form id="diet-form" class="mt-4">
+          <div class="form-group">
+            <label for="weight">Weight (kg):</label>
+            <input type="number" class="form-control" id="weight" required>
+          </div>
+          <div class="form-group">
+            <label for="height">Height (cm):</label>
+            <input type="number" class="form-control" id="height" required>
+          </div>
+          <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" class="form-control" id="age" required>
+          </div>
+          <div class="form-group">
+            <label for="gender">Gender:</label>
+            <select class="form-control" id="gender" required>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="activityLevel">Activity Level:</label>
+            <select class="form-control" id="activityLevel" required>
+              <option value="Sedentary">Sedentary</option>
+              <option value="LightlyActive">Lightly Active</option>
+              <option value="ModeratelyActive">Moderately Active</option>
+              <option value="VeryActive">Very Active</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="goal">Goal:</label>
+            <select class="form-control" id="goal" required>
+              <option value="Maintenance">Maintenance</option>
+              <option value="WeightLoss">Weight Loss</option>
+              <option value="MuscleGain">Muscle Gain</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="dietPreference">Diet Preference:</label>
+            <select class="form-control" id="dietPreference" required>
+              <option value="vegetarian">Vegetarian</option>
+              <option value="keto">Keto</option>
+              <option value="None">None</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <div id="diet-results" class="mt-4 p-3 mb-4">
+          <h3 style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+            <img src="logo.png" alt="Fitness Tracker Logo" style="height: 70px; margin-right: 10px;">
+            <span style="font-size: 1.5rem; font-weight: bold;">Fitness Tracker - Personalized Diet Plan</span>
+          </h3>
+          <div id="dynamic-results">
+            <!-- Dynamic results will be inserted here -->
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+          <button id="download-pdf" class="btn btn-success" style="padding: 10px 20px; font-size: 1rem; border-radius: 5px;">
+            Download Plan as PDF
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px; font-style: italic; color: #6c757d;">
+      "Eat for the body you want, not for the body you have."
+    </div>
+  </main>
+
+  <!-- Black Footer Box at the bottom -->
+  <footer class="footer">
+    <p>&copy; 2024 Fitness Tracker. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <script>
+    document.getElementById('diet-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const weight = document.getElementById('weight').value;
+        const height = document.getElementById('height').value;
+        const age = document.getElementById('age').value;
+        const gender = document.getElementById('gender').value;
+        const activityLevel = document.getElementById('activityLevel').value;
+        const goal = document.getElementById('goal').value;
+        const dietPreference = document.getElementById('dietPreference').value;
+        const dynamicResultsDiv = document.getElementById('dynamic-results');
+
+        fetch('/api/diet', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ weight, height, age, gender, activityLevel, goal, dietPreference }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            dynamicResultsDiv.innerHTML = `
+                <h4>Diet Plan</h4>
+                <p><strong>TDEE:</strong> ${data.tdee.toFixed(2)}</p>
+                <p><strong>Macronutrients:</strong> Protein: ${data.macronutrients[0].toFixed(2)}g, Carbs: ${data.macronutrients[1].toFixed(2)}g, Fats: ${data.macronutrients[2].toFixed(2)}g</p>
+                <h4>Meals</h4>
+                <p><strong>Breakfast:</strong> ${data.meal_plan.Breakfast.join(', ')}</p>
+                <p><strong>Lunch:</strong> ${data.meal_plan.Lunch.join(', ')}</p>
+                <p><strong>Dinner:</strong> ${data.meal_plan.Dinner.join(', ')}</p>`;
+        })
+        .catch((error) => {
+            dynamicResultsDiv.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+        });
+    });
+
+    document.getElementById('download-pdf').addEventListener('click', () => {
+        const element = document.getElementById('diet-results');
+        html2canvas(element).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jspdf.jsPDF();
+            pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
+            pdf.save('Diet_Plan.pdf');
+        });
+    });
+  </script>
+</body>
+</html>
+
+

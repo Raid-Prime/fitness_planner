@@ -9,20 +9,16 @@
   <style>
     /* General Page Styling */
     body {
-      /* Example: add a subtle background image + gradient overlay */
       background: linear-gradient(rgba(255,255,255,0.6), rgba(242,249,246,0.6)), url("bg-pattern.jpg") repeat center/cover;
-      /* If you don't have an image, just keep the gradient: */
-      /* background: linear-gradient(180deg, #ffffff, #f2f9f6); */
       font-family: Arial, sans-serif;
       min-height: 100vh;
       position: relative;
-      /* Overflow hidden if you want the floating quotes fully contained */
       overflow-x: hidden;
     }
 
     /* Navbar styling similar to homepage */
     .navbar {
-      background: #f8f9fa; /* or pick a color or transparent if you prefer */
+      background: #f8f9fa;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     .navbar-brand {
@@ -38,18 +34,17 @@
       color: rgba(100,100,100,0.2);
       font-size: 3rem;
       animation: floatQuote 10s infinite ease-in-out;
-      pointer-events: none; /* don't block clicks */
+      pointer-events: none;
     }
     @keyframes floatQuote {
       0%   { transform: translateY(0);   opacity: 0.5; }
       50%  { transform: translateY(-50px); opacity: 1; }
       100% { transform: translateY(0);   opacity: 0.5; }
     }
-    /* You can duplicate .floating-quote elements with different left/top positions for multiple quotes. */
 
     /* Container / Form Styling */
     main {
-      padding-bottom: 120px; /* ensure room above footer */
+      padding-bottom: 120px;
     }
     h2 {
       margin-top: 40px;
@@ -73,6 +68,29 @@
       color: white;
       text-align: center;
       padding: 20px 0;
+    }
+
+    /* Header and Footer Styling for PDF */
+    .header {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 1rem;
+      color: #6c757d;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 10px 0;
+    }
+
+    .page-content {
+      margin-top: 20px;
+      padding-bottom: 40px;
     }
   </style>
 </head>
@@ -219,15 +237,28 @@
 
     document.getElementById('download-pdf').addEventListener('click', () => {
         const element = document.getElementById('diet-results');
+        const header = `
+            <div class="header">
+                <img src="logo.png" alt="Fitness Tracker Logo" style="height: 70px;">
+                <p>Fitness Tracker - Personalized Diet Plan</p>
+            </div>`;
+        const footer = `
+            <div class="footer">
+                <p>&copy; 2024 Fitness Tracker. All rights reserved.</p>
+            </div>`;
+        
         html2canvas(element).then(canvas => {
             const imgData = canvas.toDataURL('image/png');
             const pdf = new jspdf.jsPDF();
-            pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
+            pdf.text(header, 10, 10); // Add header
+            pdf.addImage(imgData, 'PNG', 10, 30, 190, 0); // Add content
+            pdf.text(footer, 10, pdf.internal.pageSize.height - 20); // Add footer
             pdf.save('Diet_Plan.pdf');
         });
     });
   </script>
 </body>
+</html>
 </html>
 
 
